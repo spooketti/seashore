@@ -10,7 +10,7 @@ todoTable = {}
 parser = argparse.ArgumentParser()
 parser.add_argument("-addCol","--addCol", type=str)
 parser.add_argument("-rmCol","--rmCol", type=str)
-
+parser.add_argument("-editCol","--editCol", type=str)
 parser.add_argument("-write","--write", type=str)
 parser.add_argument("-content","--content", type=str)
 parser.add_argument("-index","--index", type=str)
@@ -37,6 +37,9 @@ if(args.erase):
 if(args.edit):
     todoTable[args.edit][int(args.index)] = args.content
 
+if(args.editCol):
+    todoTable[args.content] = todoTable.pop(args.editCol)
+
 #the cookery
 dynaTable = []
 for title in todoTable:
@@ -45,12 +48,13 @@ m = max(map(len, dynaTable))
 dynaTable = np.array([v + [" "] * (m - len(v)) for v in dynaTable])
 for i in range(len(list(todoTable))):
     table.add_column(list(todoTable.keys())[i],dynaTable[i])
+    # table._max_width = {list(todoTable.keys())[i]: 10}
 #end of the cookery
 
 print(table)
 
 
-# print(table)
+# print(table) todo.sh editCol ENM ABC
 
 with open("todo.json", "w") as json_file:
     json.dump(todoTable, json_file, indent=4)

@@ -22,6 +22,9 @@ case $# in
         "erase")
         python main.py --erase "$2" --index "$3"
         ;;
+        "editCol")
+        python main.py --editCol "$2" --content "$3"
+        ;;
       esac
       ;;
    4) 
