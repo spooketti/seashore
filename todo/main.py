@@ -13,7 +13,8 @@ parser.add_argument("-rmCol","--rmCol", type=str)
 
 parser.add_argument("-write","--write", type=str)
 parser.add_argument("-content","--content", type=str)
-
+parser.add_argument("-index","--index", type=str)
+parser.add_argument("-edit","--edit", type=str)
 parser.add_argument("-erase","--erase", type=str)
 
 args = parser.parse_args()
@@ -31,7 +32,10 @@ if(args.write):
     todoTable[args.write].append(args.content)
 
 if(args.erase):
-    del todoTable[args.erase][int(args.content)]
+    del todoTable[args.erase][int(args.index)]
+
+if(args.edit):
+    todoTable[args.edit][int(args.index)] = args.content
 
 #the cookery
 dynaTable = []

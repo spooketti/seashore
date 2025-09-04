@@ -10,6 +10,8 @@ case $# in
         "rmCol")
 	python main.py --rmCol "$2"
         ;;
+        *)
+        warn "Unknown command"
       esac
       ;;
    3)
@@ -19,6 +21,13 @@ case $# in
         ;;
         "erase")
         python main.py --erase "$2" --content "$3"
+        ;;
+      esac
+      ;;
+   4) 
+   case $1 in
+        "edit")
+        python main.py --edit "$2" --index "$3" --content "$4"
         ;;
       esac
       ;;
