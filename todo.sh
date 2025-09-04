@@ -20,7 +20,7 @@ case $# in
         python main.py --write "$2" --content "$3"
         ;;
         "erase")
-        python main.py --erase "$2" --content "$3"
+        python main.py --erase "$2" --index "$3"
         ;;
       esac
       ;;
