@@ -3,12 +3,20 @@ class terminalcolors:
     yellow = '\033[93m'
     red = '\033[91m'
     end = '\033[0m'
+    cyan = '\033[96m'
 
 from studentvue import StudentVue
 from dotenv import load_dotenv
+import argparse
 import json
 import os
+from fractions import Fraction
 load_dotenv()
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-gradebook","--gradebook", action=argparse.BooleanOptionalAction)
+parser.add_argument("-classID","--classID", type=str)
+args = parser.parse_args()
 
 cache = {}
 with open('cache.json', 'r') as file:
@@ -41,3 +49,40 @@ for key in grades:
     print(colorWarn + key["@Title"] + " " + str(key["Marks"]["Mark"]["@CalculatedScoreString"]) + " " + str(key["Marks"]["Mark"]["@CalculatedScoreRaw"]) + "%" +  terminalcolors.end + changeCase)
 with open("cache.json", "w") as json_file:
     json.dump(payloadForCache, json_file)
+
+if(not args.gradebook):
+    quit()
+
+def colorScore(s):
+    try:
+        num, denom = [float(x.strip()) for x in s.split('/')]
+    except:
+        return s
+    value = num / denom
+    color = next((c for t, c in [(0.9, terminalcolors.green), (0.85, terminalcolors.cyan), (0.8, terminalcolors.yellow)] if value >= t), terminalcolors.red)
+    return f"{color} {s} {terminalcolors.end}"
+
+print(terminalcolors.yellow + "================================GRADEBOOK================================" + terminalcolors.end)
+courses = gb["Gradebook"]["Courses"]["Course"]
+for grade in courses:
+    if(not str(args.classID) in grade["@Title"]):
+        continue
+    assignments = grade["Marks"]["Mark"]['Assignments']
+    try:
+        for assignment in assignments["Assignment"]:
+            noScore = False
+            try:
+                last_measure = assignment["@Measure"]
+                score = assignment["@Score"]
+                if "Not" in str(score):
+                    print(assignment["@Measure"] + terminalcolors.red + "Score Pending" + terminalcolors.end)
+                    noScore = True
+            except:
+                if "Not" in str(assignment):
+                    print(assignment["@Measure"] + terminalcolors.red + "Score Pending" + terminalcolors.end)
+                    noScore = True
+            if(noScore):
+                continue
+            print(str(assignment["@Measure"]) + (colorScore(assignment["@Points"])))
+    except:
+        pass

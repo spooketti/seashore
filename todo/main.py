@@ -16,6 +16,7 @@ parser.add_argument("-content","--content", type=str)
 parser.add_argument("-index","--index", type=str)
 parser.add_argument("-edit","--edit", type=str)
 parser.add_argument("-erase","--erase", type=str)
+parser.add_argument("-clear","--clear", action=argparse.BooleanOptionalAction)
 
 args = parser.parse_args()
 
@@ -39,6 +40,12 @@ if(args.edit):
 
 if(args.editCol):
     todoTable[args.content] = todoTable.pop(args.editCol)
+
+if(args.clear):
+    todoTable = {}
+    with open("todo.json", "w") as json_file:
+        json.dump(todoTable, json_file, indent=4)
+    quit()
 
 #the cookery
 dynaTable = []

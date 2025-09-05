@@ -1,5 +1,0 @@
-todo.sh addCol "name"
-todo.sh rmCol "name"
-todo.sh addAssign "colName" "content"
-todo.sh clearAssign "colname" [rowNum]
-

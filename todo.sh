@@ -2,6 +2,18 @@ cd "Programming/CLI/todo/.venv"
 source bin/activate
 cd ../
 case $# in 
+   1)
+   if [[ $1 == "clear" ]]; then
+      while true; do
+         read -p "This will delete the entire sheet, continue? " yn
+         case $yn in
+            [Yy]* ) python main.py --clear; break;;
+            [Nn]* ) exit;;
+            * ) echo "No trolling, type y or n.";;
+         esac
+      done
+   fi
+   ;;
    2) 
       case $1 in 
       	"addCol")
