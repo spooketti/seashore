@@ -3,8 +3,9 @@ source bin/activate
 cd ../
 case $# in 
    1)
-   if [[ $1 == "clear" ]]; then
-      while true; do
+   case $1 in
+     "clear")
+     while true; do
          read -p "This will delete the entire sheet, continue? " yn
          case $yn in
             [Yy]* ) python main.py --clear; break;;
@@ -12,16 +13,35 @@ case $# in
             * ) echo "No trolling, type y or n.";;
          esac
       done
-   fi
+     ;;
+     "lsTable")
+     python main.py --lsTable
+     ;;
+     "help")
+     python main.py --help
+     ;;
+     esac
    ;;
    2) 
       case $1 in 
       	"addCol")
 	python main.py --addCol "$2"
 	;;
+   "getTable")
+     python main.py --getTable "$2"
+     ;;
         "rmCol")
 	python main.py --rmCol "$2"
         ;;
+        "addTable")
+	python main.py --addTable "$2"
+	;;
+        "rmTable")
+	python main.py --rmTable "$2"
+        ;;
+        "setTable")
+	python main.py --setTable "$2"
+	;;
         *)
         warn "Unknown command"
       esac
