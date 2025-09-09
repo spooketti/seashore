@@ -50,7 +50,7 @@ if(args.addTable):
 
 
 if(args.rmTable):
-    os.remove(SHEETS_DIR+str(args.rmTable)+".json")
+    os.remove(str(SHEETS_DIR)+"/"+str(args.rmTable)+".json")
     quit()
 
 if(args.setTable):
