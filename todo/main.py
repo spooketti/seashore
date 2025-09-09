@@ -42,8 +42,8 @@ if(args.lsTable):
     quit()
 
 if(args.addTable):
-    sheet = f"{args.addTable}.json"
-    with open(SHEETS_DIR+sheet, 'w') as f:
+    sheet = f"/{args.addTable}.json"
+    with open(str(SHEETS_DIR)+sheet, 'w') as f:
         f.write("{}")
     print(f"Created {args.addTable} sheet")
     quit()
