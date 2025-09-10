@@ -5,6 +5,13 @@ import os
 from pathlib import Path
 import numpy as np
 
+class terminalcolors:
+    green = '\033[92m'
+    yellow = '\033[93m'
+    red = '\033[91m'
+    end = '\033[0m'
+    cyan = '\033[96m'
+
 BASE_DIR = Path(__file__).parent
 SHEETS_DIR = BASE_DIR / "sheets"
 MAIN_FILE = BASE_DIR / "main.txt"
@@ -45,12 +52,13 @@ if(args.addTable):
     sheet = f"/{args.addTable}.json"
     with open(str(SHEETS_DIR)+sheet, 'w') as f:
         f.write("{}")
-    print(f"Created {args.addTable} sheet")
+    print(f"{terminalcolors.green}Created {args.addTable} sheet{terminalcolors.end}")
     quit()
 
 
 if(args.rmTable):
     os.remove(str(SHEETS_DIR)+"/"+str(args.rmTable)+".json")
+    print(f"{terminalcolors.red}Deleted {args.rmTable} sheet{terminalcolors.end}")
     quit()
 
 if(args.setTable):
@@ -58,6 +66,7 @@ if(args.setTable):
     tableNameData = open(MAIN_FILE,"w")
     tableNameData.write(str(args.setTable))
     tableNameData.close()
+    print(f"{terminalcolors.yellow}Current Sheet: {args.setTable}{terminalcolors.end}")
     quit()
 
 tableNameData = open(MAIN_FILE,"r")
