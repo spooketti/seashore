@@ -91,7 +91,9 @@ if(args.color):
         quit()
     #todo: this is EXTRMELEY hacky, fix this in a future update
     old = todoTable[args.color][int(args.index)]
-    old = terminalcolors.colorMap[args.content] + old + terminalcolors.end
+    if (old.find("\x00") != -1):
+        old = old[old.find("\x00")+1:]
+    old = terminalcolors.colorMap[args.content] + "\x00" + old + terminalcolors.end
     todoTable[args.color][int(args.index)] = old
 
 
