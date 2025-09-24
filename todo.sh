@@ -31,6 +31,7 @@ case "$1" in
       python main.py --rmTable "$2"
     ;;
   setTable) python main.py --setTable "$2" ;;
+  color)    python main.py --color "$2" --index "$3" --content "$4" ;;
   write)    python main.py --write "$2" --content "$3" ;;
   erase)    python main.py --erase "$2" --index "$3" ;;
   editCol)  python main.py --editCol "$2" --content "$3" ;;

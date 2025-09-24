@@ -11,6 +11,12 @@ class terminalcolors:
     red = '\033[91m'
     end = '\033[0m'
     cyan = '\033[96m'
+    white = '\033[0;37m'
+    colorMap = {"green":green,
+                "yellow":yellow,
+                "red":red,
+                "cyan":cyan,
+                "white":white}
 
 BASE_DIR = Path(__file__).parent
 SHEETS_DIR = BASE_DIR / "sheets"
@@ -40,6 +46,7 @@ parser.add_argument("-addTable","--addTable", type=str, help="Add a table: todo.
 parser.add_argument("-rmTable","--rmTable", type=str, help="Delete a table: todo.sh rmTable [NAME]")
 parser.add_argument("-getTable","--getTable", type=str, help="View a noncurrent table: todo.sh getTable [NAME]")
 parser.add_argument("-setTable","--setTable", type=str, help="Set a table to be current table to be edited by all previous commands: todo.sh setTable [NAME]")
+parser.add_argument("-color","--color", type=str,help="Color an entry todo.sh color [COLNAME] [ROW#] [COLOR CODE], color codes are 'red', 'yellow', 'green', 'cyan', 'white'")
 
 args = parser.parse_args()
 
@@ -78,6 +85,15 @@ if(args.getTable):
 
 with open(f"{SHEETS_DIR}/{tableName}.json","r") as todo:
    todoTable = json.load(todo)
+if(args.color):
+    if not(args.content in terminalcolors.colorMap.keys()):
+        print("Color not found, use the help command to refer to color codes")
+        quit()
+    #todo: this is EXTRMELEY hacky, fix this in a future update
+    old = todoTable[args.color][int(args.index)]
+    old = terminalcolors.colorMap[args.content] + old + terminalcolors.end
+    todoTable[args.color][int(args.index)] = old
+
 
 if(args.addCol):
     todoTable[args.addCol] =  []
