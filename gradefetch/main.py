@@ -126,7 +126,7 @@ if args.graph:
         for subject in subjects:
             grade_data[subject].append(cache["gradesGraph"][record].get(subject, np.nan))
     for subject, grades in grade_data.items():
-        plt.plot(records, grades, marker='x', label=subject)
+        plt.plot(records, grades, label=subject)
 
     plt.xlabel("Time")
     plt.ylabel("Grade")

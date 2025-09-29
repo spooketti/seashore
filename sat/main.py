@@ -1,14 +1,24 @@
 import requests
+import argparse
 import random
 from markdownify import markdownify as md
 from rich.console import Console
 from rich.markdown import Markdown
+import plotext as plt 
 
 class terminalcolors:
     green = '\033[92m'
     red = '\033[91m'
     end = '\033[0m'
     yellow = '\033[93m'
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-quiz","--quiz",action=argparse.BooleanOptionalAction)
+args = parser.parse_args()
+
+plt.canvas_color("black")
+plt.axes_color("black")
+plt.ticks_color("white")
 
 CONSOLE = Console()
 METADATA_URL = "https://qbank-api.collegeboard.org/msreportingquestionbank-prod/questionbank/digital/get-questions"
@@ -42,33 +52,79 @@ hard_stubs = [
 if not hard_stubs:
     raise ValueError("No hard questions found in metadata list!")
 
-chosen_stub = random.choice(hard_stubs)
-external_id = chosen_stub["external_id"]
+run = True
+runCount = 0
+correct = 0
+questionData = []
 
-payload = {"external_id": external_id}
-r_q = session.post(QUESTION_URL, json=payload, timeout=5)
-r_q.raise_for_status()
-question_data = r_q.json()
-question_data["difficulty"] = chosen_stub.get("difficulty")
+def answerCheck(answer):
+    global run
+    global correct
+    global questionData
 
-print("External ID: " + external_id)
+    user = answer.lower()
+    correct_answer = str(questionData.get("correct_answer", "")[0]).lower()
+    match user:
+        case "q" | "quit":
+            run = False
+        case _ if user == correct_answer:
+            print(terminalcolors.green + "Locked In" + terminalcolors.end)
+            correct += 1
+        case _:
+            CONSOLE.print(Markdown(md(questionData.get("rationale", ""))))
 
-CONSOLE.print(Markdown(md(question_data.get("stimulus","").replace('<span class="sr-only">blank</span>',"").replace("<u>",terminalcolors.yellow).replace("</u>",terminalcolors.end))))
-print("\n")
-CONSOLE.print(Markdown(md(question_data.get("stem",""))))
-print("\n")
-answers = list(question_data.get("answerOptions",""))
-ansChr = "A"
+percentageData = []
+while(run):
+    run = not(args.quiz is None)
+    color = terminalcolors.green
+    percent = (correct/max(1,runCount))
+    if(percent < (49/54)):
+        color = terminalcolors.red
+    percent *= 100
+    percentageData.append(percent)
+    percent = " " + str(percent) + "%"
 
-for i in answers:
-    text =  "<span>" + ansChr + ")</span>" + str(i["content"])
-    CONSOLE.print(Markdown(md(text)))
-    ansChr = chr(ord(ansChr) + 1)
+    print("Question " + str(runCount+1))
+
+    print(color + "Score: " + str(correct) + "/" + str(runCount) + percent + terminalcolors.end)
+    runCount += 1
+    chosen_stub = random.choice(hard_stubs)
+    external_id = chosen_stub["external_id"]
+
+    payload = {"external_id": external_id}
+    r_q = session.post(QUESTION_URL, json=payload, timeout=5)
+    r_q.raise_for_status()
+    questionData = r_q.json()
+    questionData["difficulty"] = chosen_stub.get("difficulty")
+
+    print("External ID: " + external_id)
+
+    CONSOLE.print(Markdown(md(questionData.get("stimulus","").replace('<span class="sr-only">blank</span>',"").replace("<u>",terminalcolors.yellow).replace("</u>",terminalcolors.end))))
     print("\n")
+    CONSOLE.print(Markdown(md(questionData.get("stem",""))))
+    print("\n")
+    answers = list(questionData.get("answerOptions",""))
+    ansChr = "A"
 
-answer = str(input())
+    for i in answers:
+        text =  "<span>" + ansChr + ")</span>" + str(i["content"])
+        CONSOLE.print(Markdown(md(text)))
+        ansChr = chr(ord(ansChr) + 1)
+        print("\n")
 
-if(answer.lower() != str(list(question_data.get("correct_answer",""))[0]).lower()):
-    CONSOLE.print(Markdown(md(question_data.get("rationale",""))))
-else:
-    print(terminalcolors.green + "Locked In" + terminalcolors.end)
+    answer = str(input())
+    answerCheck(answer)
+
+if not(args.quiz):
+    quit()
+
+percentageData.pop(0)
+x = list(range(len(percentageData)))
+y = percentageData
+
+plt.plot(x, y)
+plt.title("Performance Over Time")
+plt.xlabel("Question")
+plt.ylabel("Percentage")
+plt.show()
+
