@@ -8,6 +8,7 @@ class terminalcolors:
     green = '\033[92m'
     red = '\033[91m'
     end = '\033[0m'
+    yellow = '\033[93m'
 
 CONSOLE = Console()
 METADATA_URL = "https://qbank-api.collegeboard.org/msreportingquestionbank-prod/questionbank/digital/get-questions"
@@ -22,7 +23,7 @@ HEADERS = {
 
 payload = {
     "asmtEventId": 99,
-    "test": 1,
+    "test": 1, #lowk if anyone sees this could you tell me about what this means
     "domain": "INI,CAS,EOI,SEC",
 }
 
@@ -50,7 +51,9 @@ r_q.raise_for_status()
 question_data = r_q.json()
 question_data["difficulty"] = chosen_stub.get("difficulty")
 
-CONSOLE.print(Markdown(md(question_data.get("stimulus",""))))
+print("External ID: " + external_id)
+
+CONSOLE.print(Markdown(md(question_data.get("stimulus","").replace('<span class="sr-only">blank</span>',"").replace("<u>",terminalcolors.yellow).replace("</u>",terminalcolors.end))))
 print("\n")
 CONSOLE.print(Markdown(md(question_data.get("stem",""))))
 print("\n")
