@@ -44,6 +44,7 @@ grades = grades["Gradebook"]["Courses"]["Course"]
 payloadForCache = {"grades":{},"gradesGraph":{}}
 
 hadChange = False
+# print(grades)
 for key in grades:
     colorWarn = ''
     pValue = (key["Marks"]["Mark"]["@CalculatedScoreRaw"])
@@ -83,6 +84,7 @@ def colorScore(s):
     value = num / denom
     color = next((c for t, c in [(0.9, terminalcolors.green), (0.85, terminalcolors.cyan), (0.8, terminalcolors.yellow)] if value >= t), terminalcolors.red)
     return f"{color} {s} {terminalcolors.end}"
+
 
 def gradebook():
     print(terminalcolors.yellow + "================================GRADEBOOK================================" + terminalcolors.end)

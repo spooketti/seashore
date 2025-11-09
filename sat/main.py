@@ -4,7 +4,8 @@ import random
 from markdownify import markdownify as md
 from rich.console import Console
 from rich.markdown import Markdown
-import plotext as plt 
+import plotext as plt
+import time
 
 class terminalcolors:
     green = '\033[92m'
@@ -34,7 +35,7 @@ HEADERS = {
 payload = {
     "asmtEventId": 99,
     "test": 1, #lowk if anyone sees this could you tell me about what this means
-    "domain": "INI,CAS,EOI,SEC",
+    "domain": "INI,SEC,CAS,EOI",
 }
 
 session = requests.Session()
@@ -83,6 +84,7 @@ while(run):
     percent *= 100
     percentageData.append(percent)
     percent = " " + str(percent) + "%"
+    startTime = time.time()
 
     print("Question " + str(runCount+1))
 
@@ -113,6 +115,7 @@ while(run):
         print("\n")
 
     answer = str(input())
+    print(terminalcolors.yellow + "Time (s): " + str(time.time()-startTime) + terminalcolors.end)
     answerCheck(answer)
 
 if not(args.quiz):
